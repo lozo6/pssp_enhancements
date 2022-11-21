@@ -10,12 +10,12 @@ load_dotenv()
 
 mysql_username = os.getenv("MYSQL_USERNAME")
 mysql_password = os.getenv("MYSQL_PASSWORD")
-mysql_host = os.getenv("MYSQL_HOST")
+mysql_hostname = os.getenv("MYSQL_HOSTNAME")
 
 db = SQLAlchemy()
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://' + mysql_username + ':' + mysql_password + '@' + mysql_host + ':3306/patient_portal'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://' + mysql_username + ':' + mysql_password + '@' + mysql_hostname + ':3306/patient_portal'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'sdf#$#dfjkhdf0SDJH0df9fd98343fdfu34rf'
 
@@ -201,7 +201,10 @@ def login():
             ## push update to user with new login time
             account.last_login = datetime.datetime.now()
             db.session.commit()
-            if session['account_type'] == 'admin':
+            if session['account_type'] == 'administrator':
+                return redirect(url_for('get_gui_patients'))
+            elif session['account_type'] == 'care_provider':
+                # care providers have access to all patients
                 return redirect(url_for('get_gui_patients'))
             elif session['account_type'] == 'patient':
                 ## go to /details/{{row.mrn}}
@@ -215,11 +218,14 @@ def login():
 def register():
     msg = ''
     if request.method == 'POST' and 'account_type' in request.form:
-        if request.form['account_type'] == 'admin':
-            # redirect to admin registration page
+        if request.form['account_type'] == 'administrator':
+            # redirect to administrator registration page for administrators
             return redirect(url_for('register_admin'))
+        elif request.form['account_type'] == 'care_provider':
+            # redirect to patient registration page for care providers
+            return redirect(url_for('register_care_provider'))
         elif request.form['account_type'] == 'patient':
-            # redirect to patient registration page
+            # redirect to patient registration page for patients
             return redirect(url_for('register_patient'))
     elif request.method == 'POST':
         # Form is empty... (no POST data)
@@ -229,6 +235,36 @@ def register():
 
 
 @app.route('/register/admin', methods=['GET', 'POST'])
+def register_admin():
+    # Output message if something goes wrong...
+    msg = ''
+    # Check if "username", "password" and "email" POST requests exist (user submitted form)
+    if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form:
+        # Create variables for easy access
+        username = request.form['username']
+        password = request.form['password']
+        email = request.form['email']
+        account_type = 'administrator'
+        mrn = None
+        ## check if email already exists
+        account = Users.query.filter_by(email=email).first()
+        if account:
+            msg = 'Account already exists !'
+        else:
+            datecreated = datetime.datetime.now()
+            lastlogin = datetime.datetime.now()
+            new_user = Users(username, password, email, account_type, mrn, datecreated, lastlogin)
+            db.session.add(new_user)
+            db.session.commit()
+            msg = "You have successfully registered a ADMINISTRATOR account!"
+    elif request.method == 'POST':
+        # Form is empty... (no POST data)
+        msg = 'Please fill out the form!'
+    # Show registration form with message (if any)
+    return render_template('register_admin.html', msg=msg)
+
+
+@app.route('/register/care_provider', methods=['GET', 'POST'])
 def register_admin():
     # Output message if something goes wrong...
     msg = ''
@@ -250,12 +286,12 @@ def register_admin():
             new_user = Users(username, password, email, account_type, mrn, datecreated, lastlogin)
             db.session.add(new_user)
             db.session.commit()
-            msg = "You have successfully registered a ADMIN account!"
+            msg = "You have successfully registered a CARE PROVIDER account!"
     elif request.method == 'POST':
         # Form is empty... (no POST data)
         msg = 'Please fill out the form!'
     # Show registration form with message (if any)
-    return render_template('register_admin.html', msg=msg)
+    return render_template('register_care_provider.html', msg=msg)
 
 
 @app.route('/register/patient', methods=['GET', 'POST'])
@@ -377,7 +413,10 @@ def logout():
 ##### CREATE BASIC GUI FOR CRUD #####
 @app.route('/patients', methods=['GET'])
 def get_gui_patients():
-    if 'loggedin' in session and session['account_type'] == 'admin':
+    if 'loggedin' in session and session['account_type'] == 'administrator':
+        returned_Patients = Patients.query.all() # documentation for .query exists: https://docs.sqlalchemy.org/en/14/orm/query.html
+        return render_template("patient_all.html", patients = returned_Patients)
+    elif 'loggedin' in session and session['account_type'] == 'care_provider':
         returned_Patients = Patients.query.all() # documentation for .query exists: https://docs.sqlalchemy.org/en/14/orm/query.html
         return render_template("patient_all.html", patients = returned_Patients)
     else:
@@ -523,11 +562,14 @@ def delete_condition(): # note this function needs to match name in html form ac
 # get all Patients
 @app.route("/api/patients/list", methods=["GET"])
 def get_patients():
-    if 'loggedin' in session and session['account_type'] == 'admin':
+    if 'loggedin' in session and session['account_type'] == 'administrator':
+        patients = Patients.query.all()
+        return jsonify([patient.to_json() for patient in patients])
+    elif 'loggedin' in session and session['account_type'] == 'care_provider':
         patients = Patients.query.all()
         return jsonify([patient.to_json() for patient in patients])
     else:
-        return jsonify({'error': 'Not logged in as admin user, try again....'})
+        return jsonify({'error': 'Not logged in as administrator or care provider user, please try again....'})
 
 # get specific Patient by MRN
 @app.route("/api/patients/<string:mrn>", methods=["GET"])
