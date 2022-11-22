@@ -154,6 +154,16 @@ CREATE TABLE IF NOT EXISTS `accounts` (
 INSERT INTO `accounts` (`id`, `username`, `password`, `email`, `account_type`) VALUES (1, 'admin', 'admin', 'admin@admin.com', 'admin');
 """
 
+table_patient_photos = """
+CREATE TABLE IF NOT EXISTS `patient_photos` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `mrn` varchar(50) NULL,
+    `photo_data` longblob NOT NULL,
+    `photo_data_rendered` longblob NOT NULL,
+    PRIMARY KEY (`id`)
+);
+"""
+
 db.execute(table_patients)
 db.execute(table_medications)
 db.execute(table_treatments_procedures)
@@ -163,6 +173,8 @@ db.execute(table_patient_medications)
 db.execute(table_patient_treatments)
 db.execute(table_patient_conditions)
 db.execute(table_patient_social_determinants)
+db.execute(table_accounts)
+db.execute(table_patient_photos)
 
 # confirm if script is working
 print(db.table_names())

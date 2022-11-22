@@ -8,7 +8,7 @@
     <meta name="generator" content="Hugo 0.101.0">
     <title>Signin Template · Bootstrap v5.2</title>
     <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/sign-in/">
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.css') }}"> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.css') }}">
 <!-- <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet"> -->
 
     <style>
@@ -64,18 +64,18 @@
       }
     </style>
 
-    
+
     <!-- Custom styles for this template -->
     <!-- <link href="signin.css" rel="stylesheet"> -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='signin.css') }}"> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='signin.css') }}">
 
   </head>
   <body class="text-center">
-    
+
 <main class="form-signin w-100 m-auto">
 
   <form action="{{ url_for('register_admin') }}" method="post">
-    <h1 class="h3 mb-3 fw-normal">Admin Account</h1>
+    <h1 class="h3 mb-3 fw-normal">Care Provider Account</h1>
 
 
     <div class="form-floating" style="padding: .2em">
@@ -96,9 +96,9 @@
     <div class="msg">{{ msg }}</div>
 
     <br />
-    
+
     <div class="form-group">
-      <button class="btn btn-primary" type="submit" value="Register">Create Admin Account</button>
+      <button class="btn btn-primary" type="submit" value="Register">Create Care Provider Account</button>
       <!-- <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a> -->
 
     </div>

@@ -8,7 +8,7 @@
     <meta name="generator" content="Hugo 0.101.0">
     <title>Signin Template · Bootstrap v5.2</title>
     <link rel="canonical" href="https://getbootstrap.com/docs/5.2/examples/sign-in/">
-    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.css') }}"> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.css') }}">
 <!-- <link href="../assets/dist/css/bootstrap.min.css" rel="stylesheet"> -->
 
     <style>
@@ -64,14 +64,14 @@
       }
     </style>
 
-    
+
     <!-- Custom styles for this template -->
     <!-- <link href="signin.css" rel="stylesheet"> -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='signin.css') }}"> 
+    <link rel="stylesheet" href="{{ url_for('static', filename='signin.css') }}">
 
   </head>
   <body class="text-center">
-    
+
 <main class="form-signin w-100 m-auto">
 
   <form action="{{ url_for('register') }}" method="post">
@@ -81,6 +81,7 @@
     <div class="form-floating">
       <select class="form-select" id="account_type" name="account_type">
         <option value="admin">Admin</option>
+        <option value="care_provider">Care Provider</option>
         <option value="patient">Patient</option>
       </select>
       <label for="floatingSelect">User Type</label>
@@ -90,7 +91,7 @@
 
 
     <br />
-    
+
     <div class="form-group">
       <button class="btn btn-primary" type="submit" value="Next">Next</button>
     </div>

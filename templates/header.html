@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %} 
+{% block title %}
     Patient Portal
 {% endblock %}
 
@@ -18,7 +18,7 @@
             <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                 <div class="navbar-nav">
                     <a class="nav-link" href="{{ url_for('get_gui_patients') }}">Patient</a>
-                    <a class="nav-link" href="{{ url_for('dashboard') }}">Dashboard</a>
+                    <a class="nav-link" href="{{ url_for('dashboard.db_blueprint_dashboard') }}">Dashboard</a>
                     <a class="nav-link" href="">Messaging</a>
                     <a class="nav-link" href="">Settings</a>
                     <a class="nav-link" href="{{ url_for('account') }}">Account</a>
