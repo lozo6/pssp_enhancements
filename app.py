@@ -463,7 +463,7 @@ def get_patient(mrn):
         abort(404)
     return jsonify(patient.to_json())
 
-##### BASIC POST ROUTES ##### [isnert new data into the database]
+##### BASIC POST ROUTES ##### [insert new data into the database]
 # new patient
 @app.route('/api/patient', methods=['POST'])
 def create_patient():

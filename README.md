@@ -16,3 +16,9 @@ Should be able to update email, username
 TO DELIVER:
 - GitHub repo
 - Video (e.g., Zoom recorded to the cloud, provide me with link + password) that provides me with a demo of what you were able to accomplish, and what troubles you encounter
+
+# Assignment Requirements
+
+Video Link[]
+
+Password is in
