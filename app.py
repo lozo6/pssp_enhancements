@@ -236,6 +236,17 @@ def account():
     # User is not loggedin redirect to login page
     return redirect(url_for('login'))
 
+@app.route('/update_account', methods=['GET', 'POST'])
+def account_update():
+    if request.method == 'POST':
+        # to edit account username and email
+        account = Users.query.filter_by(id=session['id']).first()
+        account.username = request.form.get('username')
+        account.email = request.form.get('email')
+        db.session.commit()
+        flash("Account Updated Successfully")
+        return redirect(url_for('account'))
+
 @app.route('/logout')
 def logout():
     # Remove session data, this will log the user out
