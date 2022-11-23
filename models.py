@@ -5,7 +5,7 @@ db = SQLAlchemy()
 
 ### Models ###
 class Users(db.Model):
-    __tablename__ = 'production_accounts'
+    __tablename__ = 'accounts'
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
@@ -39,7 +39,7 @@ class Users(db.Model):
         }
 
 class Patients(db.Model):
-    __tablename__ = 'production_patients'
+    __tablename__ = 'patients'
 
     id = db.Column(db.Integer, primary_key=True)
     mrn = db.Column(db.String(255))
@@ -63,7 +63,7 @@ class Patients(db.Model):
         self.contact_home = contact_home
 
 
-    # this second function is for the API endpoints to return JSON 
+    # this second function is for the API endpoints to return JSON
     def to_json(self):
         return {
             'id': self.id,
@@ -78,11 +78,11 @@ class Patients(db.Model):
         }
 
 class Conditions_patient(db.Model):
-    __tablename__ = 'production_patient_conditions'
+    __tablename__ = 'patient_conditions'
 
     id = db.Column(db.Integer, primary_key=True)
-    mrn = db.Column(db.String(255), db.ForeignKey('production_patients.mrn'))
-    icd10_code = db.Column(db.String(255), db.ForeignKey('production_conditions.icd10_code'))
+    mrn = db.Column(db.String(255), db.ForeignKey('patients.mrn'))
+    icd10_code = db.Column(db.String(255), db.ForeignKey('conditions.icd10_code'))
 
     # this first function __init__ is to establish the class for python GUI
     def __init__(self, mrn, icd10_code):
@@ -98,7 +98,7 @@ class Conditions_patient(db.Model):
         }
 
 class Conditions(db.Model):
-    __tablename__ = 'production_conditions'
+    __tablename__ = 'conditions'
 
     id = db.Column(db.Integer, primary_key=True)
     icd10_code = db.Column(db.String(255))
@@ -118,11 +118,11 @@ class Conditions(db.Model):
         }
 
 class Medications_patient(db.Model):
-    __tablename__ = 'production_patient_medications'
+    __tablename__ = 'patient_medications'
 
     id = db.Column(db.Integer, primary_key=True)
-    mrn = db.Column(db.String(255), db.ForeignKey('production_patients.mrn'))
-    med_ndc = db.Column(db.String(255), db.ForeignKey('production_medications.med_ndc'))
+    mrn = db.Column(db.String(255), db.ForeignKey('patients.mrn'))
+    med_ndc = db.Column(db.String(255), db.ForeignKey('medications.med_ndc'))
 
     # this first function __init__ is to establish the class for python GUI
     def __init__(self, mrn, med_ndc):
@@ -136,9 +136,9 @@ class Medications_patient(db.Model):
             'mrn': self.mrn,
             'med_ndc': self.med_ndc
         }
-    
+
 class Medications(db.Model):
-    __tablename__ = 'production_medications'
+    __tablename__ = 'medications'
 
     id = db.Column(db.Integer, primary_key=True)
     med_ndc = db.Column(db.String(255))
@@ -159,13 +159,13 @@ class Medications(db.Model):
 
 # https://stackoverflow.com/questions/63690158/save-uploaded-image-to-database-on-flask
 class Patients_Photos(db.Model):
-    __tablename__ = 'production_patient_photos'
+    __tablename__ = 'patient_photos'
 
     id = db.Column(db.Integer, primary_key=True)
     mrn = db.Column(db.String(255))
     photo_data = db.Column(db.LargeBinary, nullable=False)
     photo_data_rendered = db.Column(db.String(255), nullable=True)
-    
+
     # this first function __init__ is to establish the class for python GUI
     def __init__(self, mrn, photo_data, photo_data_rendered):
         self.mrn = mrn
@@ -179,5 +179,3 @@ class Patients_Photos(db.Model):
             'photo_data': self.photo_data,
             'photo_data_rendered': self.photo_data_rendered
         }
-
-
