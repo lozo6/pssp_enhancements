@@ -6,7 +6,7 @@ import os
 
 def droppingFunction_limited(dbList, db_source):
     for table in dbList:
-        if table.startswith('production_') == False:
+        if table.startswith('') == False:
             db_source.execute(f'drop table {table}')
             print(f'dropped table {table}')
         else:
@@ -23,11 +23,11 @@ load_dotenv()
 
 # stored sensitive information in a .env file
 MYSQL_HOSTNAME = os.getenv("MYSQL_HOSTNAME")
-MYSQL_USER = os.getenv("MYSQL_USERNAME")
+MYSQL_USERNAME = os.getenv("MYSQL_USERNAME")
 MYSQL_PASSWORD = os.getenv("MYSQL_PASSWORD")
 MYSQL_DATABASE = os.getenv("MYSQL_DATABASE")
 
-connection_string_azure = f'mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOSTNAME}:3306/{MYSQL_DATABASE}'
+connection_string_azure = f'mysql+pymysql://{MYSQL_USERNAME}:{MYSQL_PASSWORD}@{MYSQL_HOSTNAME}:3306/{MYSQL_DATABASE}'
 db = create_engine(connection_string_azure)
 
 disable_foreign_key = """
@@ -38,10 +38,10 @@ reenable_foreign_key = """
 SET FOREIGN_KEY_CHECKS=1
 ;
 """
-db.execute(disable_foreign_key)
-droppingFunction_all(db.table_names(), db)
-db.execute(reenable_foreign_key)
-print(db.table_names())
+# db.execute(disable_foreign_key)
+# droppingFunction_all(db.table_names(), db)
+# db.execute(reenable_foreign_key)
+# print(db.table_names())
 
 table_patients = """
 create table if not exists patients (
