@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 import os
 import datetime
 import uuid
+import pymysql
 
 from models import db, Users, Patients, Conditions_patient, Conditions, Medications_patient, Medications, Patients_Photos
 
@@ -237,7 +238,7 @@ def account():
     return redirect(url_for('login'))
 
 @app.route('/update_account', methods=['GET', 'POST'])
-def account_update():
+def update_account():
     if request.method == 'POST':
         # to edit account username and email
         account = Users.query.filter_by(id=session['id']).first()
